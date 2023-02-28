@@ -31,7 +31,7 @@ jobs:
       - name: Check out repo's default branch
         uses: actions/checkout@v3
       - name: Print inputs
-      	env:
+        env:
           OPTIONS: ${{inputs.opt}}
           ENVIRONMENT: ${{inputs.environment}}
         run: |
