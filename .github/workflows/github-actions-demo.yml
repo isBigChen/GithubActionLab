@@ -1,18 +1,66 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: my-first-actions
+run-name: ${{ github.actor }} is testing out GitHub Actions
+on: 
+  workflow_dispatch:
+    inputs:
+      opt:
+        description: "opt: need user input a value"
+        required: true
+        default: "0"
+        type: choice
+        options:
+        - 1
+        - 2
+      environment:
+        description: "environment opt"
+        type: environment
+        required: false
+        
 jobs:
-  Explore-GitHub-Actions:
+  hello-world-1:
     runs-on: ubuntu-latest
-    steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+    env: 
+      name: "jgc"
+    steps: 
+      - name: Print env
+        env:
+          age: 24
         run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          echo $name
+          echo $age
+      - name: Check out repo's default branch
+        uses: actions/checkout@v3
+      - name: Print inputs
+      	env:
+          OPTIONS: ${{inputs.opt}}
+          ENVIRONMENT: ${{inputs.environment}}
+        run: |
+          echo "opt: $OPTIONS"
+          echo "environment: $ENVIRONMENT"     
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: npm install
+        run: npm install -g
+      - name: npm install
+        run: npm -v > output.txt
+        
+  hello-world-2:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repo's default branch
+        uses: actions/checkout@v3
+      - name: Enable Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1.12.1
+      - name: Compile and run some Code
+        shell: cmd
+        run: |
+          cl.exe HelloWorld.cpp
+          HelloWorld.exe
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: "HelloWorld"
+          path: "./HelloWorld.exe"
+
