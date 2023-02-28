@@ -42,9 +42,14 @@ jobs:
         with:
           node-version: '14'
       - name: npm install
-        run: npm install -g
+        run: npm install -g bats
       - name: npm install
-        run: npm -v > output.txt
+        run: bats -v > output.txt
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: "bats-output.txt"
+          path: "./output.txt"
         
   hello-world-2:
     runs-on: windows-latest
